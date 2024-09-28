@@ -53,4 +53,13 @@ public class NotesDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOR_R, COLOR_G, COLOR_B FROM " + TABLE_NAME, null);
     }
+
+    public Cursor getFilteredData(String filter) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        if (filter == null || filter.isEmpty()) {
+            return getData(); // Return all data if no filter is applied
+        }
+        return db.rawQuery("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOR_R, COLOR_G, COLOR_B FROM " + TABLE_NAME +
+                " WHERE TITLE LIKE ?", new String[]{"%" + filter + "%"});
+    }
 }
