@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class NewNote extends AppCompatActivity {
 
@@ -28,6 +28,7 @@ public class NewNote extends AppCompatActivity {
         contentEditText = findViewById(R.id.contentEditText);
         colourSpinner = findViewById(R.id.colourSpinner);
 
+        // Populate the spinner with colours from the NoteColour enum
         ArrayAdapter<NoteColour> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, NoteColour.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colourSpinner.setAdapter(adapter);
@@ -49,10 +50,11 @@ public class NewNote extends AppCompatActivity {
             return;
         }
 
-        NoteColour selectedColor = (NoteColour) colourSpinner.getSelectedItem();
+        // Get the selected colour name from the spinner
+        NoteColour selectedColour = (NoteColour) colourSpinner.getSelectedItem();
+        String colourName = selectedColour.name();
 
-        boolean insertData = databaseHelper.addData(title, subtitle, content,
-                selectedColor.getR(), selectedColor.getG(), selectedColor.getB());
+        boolean insertData = databaseHelper.addNote(title, subtitle, content, colourName);
 
         if (insertData) {
             Toast.makeText(NewNote.this, "Note saved successfully", Toast.LENGTH_SHORT).show();
