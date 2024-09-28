@@ -14,12 +14,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button addNewNoteButton = findViewById(R.id.button);
+        Button notesButton = findViewById(R.id.notesButton);
 
         addNewNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, NewNote.class);
                 startActivity(intent);  // Starts NewNoteActivity
+            }
+        });
+
+        notesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Notes.class);
+                startActivity(intent);  // Starts NotesActivity
             }
         });
     }

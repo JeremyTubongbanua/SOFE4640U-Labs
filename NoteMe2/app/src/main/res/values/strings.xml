@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">NoteMe</string>
+    <string-array name="note_colors">
+        <item>RED</item>
+        <item>GREEN</item>
+        <item>BLUE</item>
+        <item>PINK</item>
+    </string-array>
 </resources>
