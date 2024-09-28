@@ -19,7 +19,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
     private static final String COL7 = "COLOR_B";
 
     public NotesDatabase(Context context) {
-        super(context, DATABASE_NAME, null, 2); // Update version number for schema change
+        super(context, DATABASE_NAME, null, 2);
     }
 
     @Override
@@ -46,13 +46,11 @@ public class NotesDatabase extends SQLiteOpenHelper {
         contentValues.put(COL7, b);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
-        return result != -1; // returns true if data inserted successfully
+        return result != -1;
     }
 
     public Cursor getData() {
         SQLiteDatabase db = this.getWritableDatabase();
-        // Alias the 'ID' column as '_id' to be compatible with CursorAdapter
         return db.rawQuery("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOR_R, COLOR_G, COLOR_B FROM " + TABLE_NAME, null);
     }
-
 }

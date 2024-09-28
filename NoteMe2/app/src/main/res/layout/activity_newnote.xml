@@ -62,8 +62,6 @@
         android:layout_marginStart="64dp"
         android:layout_marginTop="28dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subtitleEditText"
-        android:entries="@array/note_colors"
-        tools:listitem="3" />
+        app:layout_constraintTop_toBottomOf="@+id/subtitleEditText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

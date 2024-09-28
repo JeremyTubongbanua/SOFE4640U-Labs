@@ -1,7 +1,6 @@
 package com.sofe4640u.noteme;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -29,25 +28,15 @@ public class NewNote extends AppCompatActivity {
         contentEditText = findViewById(R.id.contentEditText);
         colourSpinner = findViewById(R.id.colourSpinner);
 
-        Button backButton = findViewById(R.id.button4);
-        Button doneButton = findViewById(R.id.button5);
+        ArrayAdapter<NoteColour> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, NoteColour.values());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        colourSpinner.setAdapter(adapter);
 
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(NewNote.this, MainActivity.class);
-                startActivity(intent);
-            }
+        findViewById(R.id.button4).setOnClickListener(v -> {
+            startActivity(new Intent(NewNote.this, MainActivity.class));
         });
 
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveNote();
-                Intent intent = new Intent(NewNote.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
+        findViewById(R.id.button5).setOnClickListener(v -> saveNote());
     }
 
     private void saveNote() {
@@ -55,14 +44,19 @@ public class NewNote extends AppCompatActivity {
         String subtitle = subtitleEditText.getText().toString();
         String content = contentEditText.getText().toString();
 
-        // Get the selected color from the spinner
-        NoteColour selectedColor = NoteColour.valueOf(colourSpinner.getSelectedItem().toString());
+        if (title.isEmpty()) {
+            Toast.makeText(NewNote.this, "Title is required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        NoteColour selectedColor = (NoteColour) colourSpinner.getSelectedItem();
 
         boolean insertData = databaseHelper.addData(title, subtitle, content,
                 selectedColor.getR(), selectedColor.getG(), selectedColor.getB());
 
         if (insertData) {
             Toast.makeText(NewNote.this, "Note saved successfully", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(NewNote.this, MainActivity.class));
         } else {
             Toast.makeText(NewNote.this, "Failed to save note", Toast.LENGTH_SHORT).show();
         }
