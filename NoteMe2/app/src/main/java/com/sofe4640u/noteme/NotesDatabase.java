@@ -4,7 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import android.database.sqlite.SQLiteOpenHelper;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NotesDatabase extends SQLiteOpenHelper {
 
@@ -33,6 +36,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Handle database upgrade as needed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
@@ -54,12 +58,32 @@ public class NotesDatabase extends SQLiteOpenHelper {
         return db.rawQuery("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME FROM " + TABLE_NAME, null);
     }
 
-    public Cursor getNotesFilteredByTitle(String title) {
+    public Cursor getNotesFiltered(String title, NoteColour colorFilter) {
         SQLiteDatabase db = this.getWritableDatabase();
-        if (title == null || title.isEmpty()) {
+        StringBuilder queryBuilder = new StringBuilder("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME FROM " + TABLE_NAME);
+        List<String> selectionArgsList = new ArrayList<>();
+
+        if ((title == null || title.isEmpty()) && colorFilter == null) {
             return getNotes(); // Return all notes if no filter is applied
+        } else {
+            queryBuilder.append(" WHERE ");
+            boolean firstCondition = true;
+
+            if (title != null && !title.isEmpty()) {
+                queryBuilder.append("TITLE LIKE ?");
+                selectionArgsList.add("%" + title + "%");
+                firstCondition = false;
+            }
+
+            if (colorFilter != null) {
+                if (!firstCondition) {
+                    queryBuilder.append(" AND ");
+                }
+                queryBuilder.append("COLOUR_NAME = ?");
+                selectionArgsList.add(colorFilter.name());
+            }
         }
-        return db.rawQuery("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME FROM " + TABLE_NAME +
-                " WHERE TITLE LIKE ?", new String[]{"%" + title + "%"});
+        String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+        return db.rawQuery(queryBuilder.toString(), selectionArgs);
     }
 }
