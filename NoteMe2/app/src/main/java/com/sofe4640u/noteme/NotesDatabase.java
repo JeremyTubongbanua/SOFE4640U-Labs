@@ -20,7 +20,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
     private static final String COL5 = "COLOUR_NAME"; // Store the name of the colour
 
     public NotesDatabase(Context context) {
-        super(context, DATABASE_NAME, null, 3); // Updated version number due to schema change
+        super(context, DATABASE_NAME, null, 3);
     }
 
     @Override
@@ -30,13 +30,12 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 COL2 + " TEXT, " +
                 COL3 + " TEXT, " +
                 COL4 + " TEXT, " +
-                COL5 + " TEXT)"; // Store colour as a text column
+                COL5 + " TEXT)";
         db.execSQL(createTable);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Handle database upgrade as needed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
@@ -64,7 +63,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         List<String> selectionArgsList = new ArrayList<>();
 
         if ((title == null || title.isEmpty()) && colorFilter == null) {
-            return getNotes(); // Return all notes if no filter is applied
+            return getNotes();
         } else {
             queryBuilder.append(" WHERE ");
             boolean firstCondition = true;
