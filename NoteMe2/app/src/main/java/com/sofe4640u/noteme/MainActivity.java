@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadNotes(ListView notesListView, String filter, NoteColour colorFilter) {
         Cursor cursor = notesDatabase.getNotesFiltered(filter, colorFilter);
-        String[] fromColumns = { "TITLE", "SUBTITLE" };
-        int[] toViews = { R.id.noteTitle, R.id.noteSubtitle };
+        String[] fromColumns = { "TITLE", "SUBTITLE", "CONTENT" };
+        int[] toViews = { R.id.noteTitle, R.id.noteSubtitle, R.id.noteContent };
 
         adapter = new SimpleCursorAdapter(
                 this,
