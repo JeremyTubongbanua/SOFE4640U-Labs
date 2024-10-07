@@ -30,7 +30,6 @@ public class NewNote extends AppCompatActivity {
         contentEditText = findViewById(R.id.contentEditText);
         colourSpinner = findViewById(R.id.colourSpinner);
 
-        // Populate the spinner with colours from the NoteColour enum
         ArrayAdapter<NoteColour> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, NoteColour.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colourSpinner.setAdapter(adapter);
@@ -52,7 +51,6 @@ public class NewNote extends AppCompatActivity {
             return;
         }
 
-        // Get the selected colour name from the spinner
         NoteColour selectedColour = (NoteColour) colourSpinner.getSelectedItem();
         String colourName = selectedColour.name();
 

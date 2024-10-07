@@ -14,7 +14,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ColorViewHol
 
     private List<NoteColour> colors;
     private OnColorClickListener listener;
-    private int selectedPosition = RecyclerView.NO_POSITION; // Keep track of selected position
+    private int selectedPosition = RecyclerView.NO_POSITION;
 
     public interface OnColorClickListener {
         void onColorClick(NoteColour color);
@@ -62,10 +62,8 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ColorViewHol
         }
 
         public void bind(NoteColour color, boolean isSelected) {
-            // Set color name
             colorText.setText(color.name());
 
-            // Set circle color
             int colorValue = Color.rgb(color.getR(), color.getG(), color.getB());
             colorCircle.setBackgroundColor(colorValue);
 
@@ -78,22 +76,18 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ColorViewHol
 //                colorLayout.setBackgroundResource(0);
 //            }
 
-            // Handle item click
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
                     int previousSelectedPosition = selectedPosition;
 
                     if (selectedPosition == getAdapterPosition()) {
-                        // Deselect if the same item is clicked
                         selectedPosition = RecyclerView.NO_POSITION;
                         listener.onColorClick(null); // Pass null to indicate no color filter
                     } else {
-                        // Update selected position
                         selectedPosition = getAdapterPosition();
                         listener.onColorClick(color);
                     }
 
-                    // Refresh items to update UI
                     notifyItemChanged(previousSelectedPosition);
                     notifyItemChanged(selectedPosition);
                 }
