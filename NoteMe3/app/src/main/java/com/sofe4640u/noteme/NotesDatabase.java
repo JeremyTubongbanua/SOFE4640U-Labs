@@ -69,6 +69,12 @@ public class NotesDatabase extends SQLiteOpenHelper {
         return result > 0;
     }
 
+    public boolean deleteNote(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE_NAME, "ID = ?", new String[]{id});
+        return result > 0; // returns true if delete was successful
+    }
+
     public Cursor getNotesFiltered(String title, NoteColour colorFilter) {
         SQLiteDatabase db = this.getWritableDatabase();
         StringBuilder queryBuilder = new StringBuilder("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME FROM " + TABLE_NAME);
