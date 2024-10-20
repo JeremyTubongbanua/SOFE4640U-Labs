@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">NoteMe</string>
+    <string-array name="note_colors">
+        <item>RED</item>
+        <item>ORANGE</item>
+        <item>YELLOW</item>
+        <item>GREEN</item>
+        <item>BLUE</item>
+        <item>PURPLE</item>
+        <item>PINK</item>
+        <item>CYAN</item>
+        <item>MAGENTA</item>
+        <item>AMBER</item>
+        <item>LIME</item>
+        <item>TEAL</item>
+        <item>INDIGO</item>
+    </string-array>
+</resources>
