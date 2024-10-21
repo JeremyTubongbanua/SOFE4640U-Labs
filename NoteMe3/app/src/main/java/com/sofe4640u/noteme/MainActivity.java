@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private NotesDatabase notesDatabase;
     private SimpleCursorAdapter adapter;
-    private NoteColour currentColorFilter = null; // Keep track of selected color filter
+    private NoteColour currentColorFilter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +83,10 @@ public class MainActivity extends AppCompatActivity {
 
         Button resetBtn = findViewById(R.id.resetBtn);
         resetBtn.setOnClickListener(v -> {
-            currentColorFilter = null; // Reset color filter
-            searchView.setQuery("", false); // Clear search query
-            colorAdapter.resetSelection(); // Reset color selection in adapter
-            loadNotes(notesListView, "", currentColorFilter); // Reload notes without filters
+            currentColorFilter = null;
+            searchView.setQuery("", false);
+            colorAdapter.resetSelection();
+            loadNotes(notesListView, "", currentColorFilter);
         });
     }
 
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
             NoteColour colour = NoteColour.valueOf(colourName);
             return Color.rgb(colour.getR(), colour.getG(), colour.getB());
         } catch (IllegalArgumentException e) {
-            return Color.WHITE; // Default color if parsing fails
+            return Color.WHITE;
         }
     }
 }

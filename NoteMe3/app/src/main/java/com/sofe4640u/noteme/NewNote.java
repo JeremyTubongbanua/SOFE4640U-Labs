@@ -47,7 +47,7 @@ public class NewNote extends AppCompatActivity {
     Button deleteBtn, doneBtn, backBtn, uploadBtn, cameraBtn;
     ImageView imageView;
     Spinner colourSpinner;
-    String noteId = null; // Track if we're editing a note
+    String noteId = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,14 +90,13 @@ public class NewNote extends AppCompatActivity {
             NoteColour selectedColour = NoteColour.valueOf(colourName);
             colourSpinner.setSelection(adapter.getPosition(selectedColour));
 
-            // Retrieve the image binary data from the intent
             byte[] imageBin = intent.getByteArrayExtra("imageBin");
 
             if (imageBin != null && imageBin.length > 0) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(imageBin, 0, imageBin.length);
                 if (bitmap != null) {
-                    imageView.setImageBitmap(bitmap);  // Set the image to the imageView
-                    imageUri = saveBitmapToUri(bitmap);  // Save it to the imageUri for further updates
+                    imageView.setImageBitmap(bitmap);
+                    imageUri = saveBitmapToUri(bitmap);
                 }
             }
 
@@ -116,7 +115,7 @@ public class NewNote extends AppCompatActivity {
                 } else {
                     Toast.makeText(NewNote.this, "Failed to delete note", Toast.LENGTH_SHORT).show();
                 }
-                startActivity(new Intent(NewNote.this, MainActivity.class));  // Go back to main activity after deletion
+                startActivity(new Intent(NewNote.this, MainActivity.class));
             }
         });
 
@@ -178,18 +177,15 @@ public class NewNote extends AppCompatActivity {
 
 
     private File createImageFile() throws IOException {
-        // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
         File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
+                imageFileName,
+                ".jpg",
+                storageDir
         );
-
-        // Save a file: path for use with ACTION_VIEW intents
         return image;
     }
 
@@ -208,9 +204,8 @@ public class NewNote extends AppCompatActivity {
                 }
             } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 try {
-                    // Use the Uri to get the Bitmap
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                    imageView.setImageBitmap(bitmap);  // Display the image in the ImageView
+                    imageView.setImageBitmap(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

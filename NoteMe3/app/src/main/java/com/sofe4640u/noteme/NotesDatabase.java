@@ -18,10 +18,10 @@ public class NotesDatabase extends SQLiteOpenHelper {
     private static final String COL3 = "SUBTITLE";
     private static final String COL4 = "CONTENT";
     private static final String COL5 = "COLOUR_NAME";
-    private static final String COL6 = "IMAGE_BIN";  // Change column name to IMAGE_BIN for binary image storage
+    private static final String COL6 = "IMAGE_BIN";
 
     public NotesDatabase(Context context) {
-        super(context, DATABASE_NAME, null, 4);  // Increment version for schema update
+        super(context, DATABASE_NAME, null, 4);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 COL3 + " TEXT, " +
                 COL4 + " TEXT, " +
                 COL5 + " TEXT, " +
-                COL6 + " BLOB)";  // Change IMAGE_BIN to BLOB for binary data
+                COL6 + " BLOB)";
         db.execSQL(createTable);
     }
 
@@ -49,7 +49,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         contentValues.put(COL3, subtitle);
         contentValues.put(COL4, content);
         contentValues.put(COL5, colourName);
-        contentValues.put(COL6, imageData);  // Save image as binary
+        contentValues.put(COL6, imageData);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
         return result != -1;
@@ -62,7 +62,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         contentValues.put(COL3, subtitle);
         contentValues.put(COL4, content);
         contentValues.put(COL5, colourName);
-        contentValues.put(COL6, imageData);  // Update image binary data
+        contentValues.put(COL6, imageData);
 
         int result = db.update(TABLE_NAME, contentValues, "ID = ?", new String[]{id});
         return result > 0;
@@ -70,7 +70,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     public Cursor getNotes() {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME, IMAGE_BIN FROM " + TABLE_NAME, null); // Query IMAGE_BIN as BLOB
+        return db.rawQuery("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME, IMAGE_BIN FROM " + TABLE_NAME, null);
     }
 
     public boolean updateNote(String id, String title, String subtitle, String content, String colourName, String imageUri) {
@@ -80,7 +80,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         contentValues.put(COL3, subtitle);
         contentValues.put(COL4, content);
         contentValues.put(COL5, colourName);
-        contentValues.put(COL6, imageUri);  // Add IMAGE_URI
+        contentValues.put(COL6, imageUri);
 
         int result = db.update(TABLE_NAME, contentValues, "ID = ?", new String[]{id});
         return result > 0;
@@ -89,12 +89,12 @@ public class NotesDatabase extends SQLiteOpenHelper {
     public boolean deleteNote(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         int result = db.delete(TABLE_NAME, "ID = ?", new String[]{id});
-        return result > 0; // returns true if delete was successful
+        return result > 0;
     }
 
     public Cursor getNotesFiltered(String title, NoteColour colorFilter) {
         SQLiteDatabase db = this.getWritableDatabase();
-        StringBuilder queryBuilder = new StringBuilder("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME, IMAGE_URI FROM " + TABLE_NAME); // Include IMAGE_URI
+        StringBuilder queryBuilder = new StringBuilder("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME, IMAGE_URI FROM " + TABLE_NAME);
         List<String> selectionArgsList = new ArrayList<>();
 
         if ((title == null || title.isEmpty()) && colorFilter == null) {
