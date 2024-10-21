@@ -17,10 +17,11 @@ public class NotesDatabase extends SQLiteOpenHelper {
     private static final String COL2 = "TITLE";
     private static final String COL3 = "SUBTITLE";
     private static final String COL4 = "CONTENT";
-    private static final String COL5 = "COLOUR_NAME"; // Store the name of the colour
+    private static final String COL5 = "COLOUR_NAME";
+    private static final String COL6 = "IMAGE_BIN";  // Change column name to IMAGE_BIN for binary image storage
 
     public NotesDatabase(Context context) {
-        super(context, DATABASE_NAME, null, 3);
+        super(context, DATABASE_NAME, null, 4);  // Increment version for schema update
     }
 
     @Override
@@ -30,7 +31,8 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 COL2 + " TEXT, " +
                 COL3 + " TEXT, " +
                 COL4 + " TEXT, " +
-                COL5 + " TEXT)";
+                COL5 + " TEXT, " +
+                COL6 + " BLOB)";  // Change IMAGE_BIN to BLOB for binary data
         db.execSQL(createTable);
     }
 
@@ -40,30 +42,45 @@ public class NotesDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addNote(String title, String subtitle, String content, String colourName) {
+    public boolean addNote(String title, String subtitle, String content, String colourName, byte[] imageData) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, title);
         contentValues.put(COL3, subtitle);
         contentValues.put(COL4, content);
         contentValues.put(COL5, colourName);
+        contentValues.put(COL6, imageData);  // Save image as binary
 
         long result = db.insert(TABLE_NAME, null, contentValues);
-        return result != -1; // returns true if data is inserted successfully
+        return result != -1;
+    }
+
+    public boolean updateNote(String id, String title, String subtitle, String content, String colourName, byte[] imageData) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL2, title);
+        contentValues.put(COL3, subtitle);
+        contentValues.put(COL4, content);
+        contentValues.put(COL5, colourName);
+        contentValues.put(COL6, imageData);  // Update image binary data
+
+        int result = db.update(TABLE_NAME, contentValues, "ID = ?", new String[]{id});
+        return result > 0;
     }
 
     public Cursor getNotes() {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME FROM " + TABLE_NAME, null);
+        return db.rawQuery("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME, IMAGE_BIN FROM " + TABLE_NAME, null); // Query IMAGE_BIN as BLOB
     }
 
-    public boolean updateNote(String id, String title, String subtitle, String content, String colourName) {
+    public boolean updateNote(String id, String title, String subtitle, String content, String colourName, String imageUri) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, title);
         contentValues.put(COL3, subtitle);
         contentValues.put(COL4, content);
         contentValues.put(COL5, colourName);
+        contentValues.put(COL6, imageUri);  // Add IMAGE_URI
 
         int result = db.update(TABLE_NAME, contentValues, "ID = ?", new String[]{id});
         return result > 0;
@@ -77,7 +94,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     public Cursor getNotesFiltered(String title, NoteColour colorFilter) {
         SQLiteDatabase db = this.getWritableDatabase();
-        StringBuilder queryBuilder = new StringBuilder("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME FROM " + TABLE_NAME);
+        StringBuilder queryBuilder = new StringBuilder("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME, IMAGE_URI FROM " + TABLE_NAME); // Include IMAGE_URI
         List<String> selectionArgsList = new ArrayList<>();
 
         if ((title == null || title.isEmpty()) && colorFilter == null) {

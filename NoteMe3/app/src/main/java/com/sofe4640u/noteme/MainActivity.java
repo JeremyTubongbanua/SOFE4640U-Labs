@@ -1,15 +1,21 @@
 package com.sofe4640u.noteme;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
@@ -20,6 +26,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int GET_FROM_GALLERY = 1;
+
     private NotesDatabase notesDatabase;
     private SimpleCursorAdapter adapter;
     private NoteColour currentColorFilter = null; // Keep track of selected color filter
@@ -28,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, GET_FROM_GALLERY);
+        }
+
 
         notesDatabase = new NotesDatabase(this);
 
@@ -91,17 +104,34 @@ public class MainActivity extends AppCompatActivity {
                 0);
 
         adapter.setViewBinder((view, cursor1, columnIndex) -> {
-            String name = String.valueOf(cursor1.getColumnIndex("COLOUR_NAME"));
+            try {
+                String colourName = cursor1.getString(4);
+                int color = getColorFromName(colourName);
 
-            String colourName = cursor1.getString(4);
-            int color = getColorFromName(colourName);
-            RelativeLayout layout = (RelativeLayout) view.getParent();
-            layout.setBackgroundColor(color);
-            Log.d("column isf", colourName);
+                RelativeLayout layout = (RelativeLayout) view.getParent();
+                layout.setBackgroundColor(color);
 
+                ImageView imageView = layout.findViewById(R.id.imageView);
+                if (imageView != null) {
+                    byte[] imageData = cursor1.getBlob(5);
+
+                    if (imageData != null && imageData.length > 0) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+                        if (bitmap != null) {
+                            imageView.setImageBitmap(bitmap);
+                        } else {
+                            imageView.setImageResource(R.drawable.ic_launcher_background);
+                        }
+                    } else {
+                        imageView.setImageResource(R.drawable.ic_launcher_background);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return false;
-
         });
+
 
         notesListView.setAdapter(adapter);
 
@@ -112,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
             String subtitle = selectedNoteCursor.getString(selectedNoteCursor.getColumnIndexOrThrow("SUBTITLE"));
             String content = selectedNoteCursor.getString(selectedNoteCursor.getColumnIndexOrThrow("CONTENT"));
             String colourName = selectedNoteCursor.getString(selectedNoteCursor.getColumnIndexOrThrow("COLOUR_NAME"));
+            byte[] imageBin = selectedNoteCursor.getBlob(selectedNoteCursor.getColumnIndexOrThrow("IMAGE_BIN"));
 
             Intent intent = new Intent(MainActivity.this, NewNote.class);
             intent.putExtra("noteId", noteId);
@@ -119,9 +150,11 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("subtitle", subtitle);
             intent.putExtra("content", content);
             intent.putExtra("colourName", colourName);
+            intent.putExtra("imageBin", imageBin);
             startActivity(intent);
         });
     }
+
 
     private int getColorFromName(String colourName) {
         try {
