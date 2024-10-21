@@ -73,19 +73,6 @@ public class NotesDatabase extends SQLiteOpenHelper {
         return db.rawQuery("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME, IMAGE_BIN FROM " + TABLE_NAME, null);
     }
 
-    public boolean updateNote(String id, String title, String subtitle, String content, String colourName, String imageUri) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL2, title);
-        contentValues.put(COL3, subtitle);
-        contentValues.put(COL4, content);
-        contentValues.put(COL5, colourName);
-        contentValues.put(COL6, imageUri);
-
-        int result = db.update(TABLE_NAME, contentValues, "ID = ?", new String[]{id});
-        return result > 0;
-    }
-
     public boolean deleteNote(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         int result = db.delete(TABLE_NAME, "ID = ?", new String[]{id});

@@ -155,7 +155,6 @@ public class NewNote extends AppCompatActivity {
     private void openCamera() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
-            // Create the File where the photo should go
             File photoFile = null;
             try {
                 photoFile = createImageFile();
