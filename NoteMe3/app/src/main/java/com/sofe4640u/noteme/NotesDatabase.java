@@ -81,7 +81,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     public Cursor getNotesFiltered(String title, NoteColour colorFilter) {
         SQLiteDatabase db = this.getWritableDatabase();
-        StringBuilder queryBuilder = new StringBuilder("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME, IMAGE_URI FROM " + TABLE_NAME);
+        StringBuilder queryBuilder = new StringBuilder("SELECT ID as _id, TITLE, SUBTITLE, CONTENT, COLOUR_NAME, IMAGE_BIN FROM " + TABLE_NAME);
         List<String> selectionArgsList = new ArrayList<>();
 
         if ((title == null || title.isEmpty()) && colorFilter == null) {
@@ -107,4 +107,5 @@ public class NotesDatabase extends SQLiteOpenHelper {
         String[] selectionArgs = selectionArgsList.toArray(new String[0]);
         return db.rawQuery(queryBuilder.toString(), selectionArgs);
     }
+
 }
